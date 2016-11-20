@@ -63,14 +63,17 @@ function! loggly#urlencode(url)
 endfunction
 " }}}
 
-function! loggly#search(value)
+function! loggly#searchtext(value)
+	return loggly#search(loggly#queryencode(a:value))
+endfunction
 
+function! loggly#search(value)
 	" Ensure settings were configured
 	call loggly#sanitycheck()
 
 	" Ask for search terms
 	call inputsave()
-	let l:value = input('Loggly - Search: ', loggly#queryencode(a:value))
+	let l:value = input('Loggly - Search: ', a:value)
 	let g:loggly_default_from = input('Loggly - From: ', g:loggly_default_from)
 	let g:loggly_default_until = input('Loggly - Until: ', g:loggly_default_until)
 	let g:loggly_default_size = input('Loggly - Limit results to: ', g:loggly_default_size)
