@@ -36,3 +36,13 @@ You also need to assign these variables in your `.vimrc`:
 # Usage
 
 Type `<leader>loggly` in visual mode to start a search and show results in a new split buffer.
+
+When *not* in visual mode, it will remember your last search.
+
+# Settings
+
+    let g:loggly_default_from = "-1h"
+    let g:loggly_default_until = "now"
+    let g:loggly_default_size = "10"
+
+Find more using `:help loggly-search`

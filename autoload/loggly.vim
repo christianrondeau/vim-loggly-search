@@ -2,6 +2,9 @@
 " '' = horizontal, 'v' = vertical
 let g:loggly_splittype = get(g:, 'loggly_splittype', "")
 let g:loggly_bufname = get(g:, 'loggly_bufname', ".loggly-search-output.json")
+let g:loggly_default_from = get(g:, 'loggly_default_from', "-1h")
+let g:loggly_default_until = get(g:, 'loggly_default_until', "now")
+let g:loggly_default_size = get(g:, 'loggly_default_size', "10")
 " }}}
 
 " Sanity check {{{
@@ -41,27 +44,47 @@ endfunction
 " }}}
 
 function! loggly#search(value)
+
+	" Ensure settings were configured
 	call loggly#sanitycheck()
+
+	" Ask for search terms
+	call inputsave()
+	let l:value = input('Loggly - Search: ', a:value)
+	let g:loggly_default_from = input('Loggly - From: ', g:loggly_default_from)
+	let g:loggly_default_until = input('Loggly - Until: ', g:loggly_default_until)
+	let g:loggly_default_size = input('Loggly - Limit results to: ', g:loggly_default_size)
+	call inputrestore()
+
+	" Keep search for next time
+	let g:loggly_lastsearch = l:value
+
+	" Open results buffer
 	call loggly#gotobuf()
 
-	call setline(1, "Searching for \"" . a:value . "\"...")
+	" Wait message
+	call setline(1, "Searching for \"" . l:value . "\"...")
 	redraw!
 
-	execute "silent! read! curl -sS " . g:loggly_curl_auth . " \"https://" . g:loggly_account . ".loggly.com/apiv2/search?q=" . a:value . "&from=-2h&until=now&size=10\""
+	" Search
+	execute "silent! read! curl -sS " . g:loggly_curl_auth . " \"https://" . g:loggly_account . ".loggly.com/apiv2/search?q=" . l:value . "&from=" . g:loggly_default_from . "&until=" . g:loggly_default_until . "&size=" . g:loggly_default_size . "\""
 
+	" Get search id
 	let l:searchid = loggly#getsearchid()
-
 	if strlen(l:searchid) < 6
 		throw "Could not get a search id"
 	endif
 
+	" Waiting for events
 	normal! 2GdG
 	call setline(2, "Waiting for rsid \"" . l:searchid . "\"...")
 	redraw!
 	normal! ggdG
 	
+	" Get events
 	execute "silent! read! curl -sS " . g:loggly_curl_auth . " \"https://" . g:loggly_account . ".loggly.com/apiv2/events?rsid=" . l:searchid . "\""
 	normal! ggdd
 
+	" Prepare results
 	setlocal filetype=json
 endfunction
