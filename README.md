@@ -6,9 +6,10 @@ Searches for the visually selected text in [Loggly](https://www.loggly.com).
 
 ## Prerequisites
 
-Requies `curl` to be installed and in the `PATH`.
+* A [Loggly](https://www.loggly.com) account
+* Requires `curl` to be installed and in the `PATH`.
 
-## Vundle
+## Installation
 
 Use your preferred Vim plugin installation method. If you like [Vundle](https://github.com/VundleVim/Vundle.vim):
 
@@ -20,6 +21,17 @@ And install it:
 
     :so ~/.vimrc
     :PluginInstall
+
+You also need to assign these variables in your `.vimrc`:
+
+    " Your <account>.loggly.com
+    let g:loggly_account = "account_name"
+
+    " Either:
+    "  * --netrc-file my-password-file
+    "  * -u username
+    "  * -u username:password
+    let g:loggly_curl_auth = "--netrc-file my-password-file ~/.loggly_netrc"
 
 # Usage
 
