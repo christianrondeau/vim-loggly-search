@@ -34,10 +34,15 @@ endfunction
 " }}}
 
 " Loggly encode {{{
+function! loggly#cmdencode(arg)
+	let l:arg = substitute(a:arg, "\"", "\\\"", "g")
+	let l:arg = substitute(a:arg, "\\$", "\\\\$", "g")
+	return l:arg
+endfunction
+
 function! loggly#queryencode(query)
 	let l:query = substitute(a:query, "[+\–&|!(){}[\\]^\"~*?:\\\\]", " ", "g")
-	" TODO: Quotes don't work in loggly?
-	" let l:query = "\"" . l:query . "\""
+	let l:query = "\"" . l:query . "\""
 	return l:query
 endfunction
 " }}}
@@ -52,23 +57,8 @@ function! loggly#getsearchid()
 endfunction
 " }}}
 
-" Url encode {{{
-function! loggly#urlencode(url)
-	let l:url = a:url
-
-	let l:url = substitute(l:url, "%", "%25", "g")
-
-	let l:url = substitute(l:url, " ", "%20", "g")
-	let l:url = substitute(l:url, "\"", "%22", "g")
-	let l:url = substitute(l:url, "#", "%23", "g")
-	let l:url = substitute(l:url, "&", "%26", "g")
-	echom l:url
-	return l:url
-endfunction
-" }}}
-
 function! loggly#searchtext(value)
-	return loggly#search(loggly#queryencode(a:value))
+	return loggly#search("\"" . loggly#queryencode(a:value) . "\"")
 endfunction
 
 function! loggly#search(value)
@@ -94,7 +84,7 @@ function! loggly#search(value)
 	redraw!
 
 	" Search
-	execute "silent! read! curl -sS " . g:loggly_curl_auth . " \"https://" . g:loggly_account . ".loggly.com/apiv2/search?q=" . loggly#urlencode(l:value) . "&from=" . g:loggly_default_from . "&until=" . g:loggly_default_until . "&size=" . g:loggly_default_size . "\""
+	execute "silent! read! curl -sS -G " . g:loggly_curl_auth . " \"https://" . g:loggly_account . ".loggly.com/apiv2/search\" --data-urlencode \"q=" . loggly#cmdencode(l:value) . "\" --data-urlencode \"from=" . loggly#cmdencode(g:loggly_default_from) . "\" --data-urlencode \"until=" . loggly#cmdencode(g:loggly_default_until) . "\" --data-urlencode \"size=" . loggly#cmdencode(g:loggly_default_size) . "\""
 
 	" Get search id
 	let l:searchid = loggly#getsearchid()
