@@ -33,6 +33,12 @@ function! loggly#gotobuf()
 endfunction
 " }}}
 
+" Loggly encode {{{
+function! loggly#queryencode(query)
+	return "\"" . substitute(a:query, "[+\–&|!(){}[\\]^\"~*?:\\\\]", " ", "g") . "\""
+endfunction
+" }}}
+
 " Get rsid {{{
 function! loggly#getsearchid()
 	let l:pattern   = '\v"id": "(.*)"'
@@ -43,6 +49,20 @@ function! loggly#getsearchid()
 endfunction
 " }}}
 
+" Url encode {{{
+function! loggly#urlencode(url)
+	let l:url = a:url
+
+	let l:url = substitute(l:url, "%", "%25", "g")
+
+	let l:url = substitute(l:url, " ", "%20", "g")
+	let l:url = substitute(l:url, "\"", "%22", "g")
+	let l:url = substitute(l:url, "#", "%23", "g")
+	let l:url = substitute(l:url, "&", "%26", "g")
+	return l:url
+endfunction
+" }}}
+
 function! loggly#search(value)
 
 	" Ensure settings were configured
@@ -50,7 +70,7 @@ function! loggly#search(value)
 
 	" Ask for search terms
 	call inputsave()
-	let l:value = input('Loggly - Search: ', a:value)
+	let l:value = input('Loggly - Search: ', loggly#queryencode(a:value))
 	let g:loggly_default_from = input('Loggly - From: ', g:loggly_default_from)
 	let g:loggly_default_until = input('Loggly - Until: ', g:loggly_default_until)
 	let g:loggly_default_size = input('Loggly - Limit results to: ', g:loggly_default_size)
@@ -67,7 +87,7 @@ function! loggly#search(value)
 	redraw!
 
 	" Search
-	execute "silent! read! curl -sS " . g:loggly_curl_auth . " \"https://" . g:loggly_account . ".loggly.com/apiv2/search?q=" . l:value . "&from=" . g:loggly_default_from . "&until=" . g:loggly_default_until . "&size=" . g:loggly_default_size . "\""
+	execute "silent! read! curl -sS " . g:loggly_curl_auth . " \"https://" . g:loggly_account . ".loggly.com/apiv2/search?q=" . loggly#urlencode(l:value) . "&from=" . g:loggly_default_from . "&until=" . g:loggly_default_until . "&size=" . g:loggly_default_size . "\""
 
 	" Get search id
 	let l:searchid = loggly#getsearchid()
