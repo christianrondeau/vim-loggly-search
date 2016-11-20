@@ -35,7 +35,10 @@ endfunction
 
 " Loggly encode {{{
 function! loggly#queryencode(query)
-	return "\"" . substitute(a:query, "[+\–&|!(){}[\\]^\"~*?:\\\\]", " ", "g") . "\""
+	let l:query = substitute(a:query, "[+\–&|!(){}[\\]^\"~*?:\\\\]", " ", "g")
+	" TODO: Quotes don't work in loggly?
+	" let l:query = "\"" . l:query . "\""
+	return l:query
 endfunction
 " }}}
 
@@ -59,6 +62,7 @@ function! loggly#urlencode(url)
 	let l:url = substitute(l:url, "\"", "%22", "g")
 	let l:url = substitute(l:url, "#", "%23", "g")
 	let l:url = substitute(l:url, "&", "%26", "g")
+	echom l:url
 	return l:url
 endfunction
 " }}}
