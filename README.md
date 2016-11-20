@@ -9,7 +9,7 @@ Searches for the visually selected text in [Loggly](https://www.loggly.com).
 * A [Loggly](https://www.loggly.com) account
 * Requires `curl` to be installed and in the `PATH`.
 
-## Installation
+## Plugin
 
 Use your preferred Vim plugin installation method. If you like [Vundle](https://github.com/VundleVim/Vundle.vim):
 
@@ -22,6 +22,8 @@ And install it:
     :so ~/.vimrc
     :PluginInstall
 
+## Basic Configuration
+
 You also need to assign these variables in your `.vimrc`:
 
     " Your <account>.loggly.com
@@ -32,6 +34,11 @@ You also need to assign these variables in your `.vimrc`:
     "  * -u username
     "  * -u username:password
     let g:loggly_curl_auth = "--netrc-file my-password-file ~/.loggly_netrc"
+
+## Windows
+
+* Install [cURL](https://curl.haxx.se/) and make sur it's in your `PATH`
+* Make sure cURL is configured to accept HTTPS ([see instructions here](http://support.gnip.com/articles/curl-on-win7.html))
 
 # Usage
 
