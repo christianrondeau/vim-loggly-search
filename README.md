@@ -38,7 +38,7 @@ You also need to assign these variables in your `.vimrc`:
 ## Windows
 
 * Install [cURL](https://curl.haxx.se/) and make sur it's in your `PATH`
-* Make sure cURL is configured to accept HTTPS ([see instructions here](http://support.gnip.com/articles/curl-on-win7.html))
+* Download https://curl.haxx.se/ca/cacert.pem as `curl-ca-bundle.crt` somewhere available in your `PATH`
 
 # Usage
 
