@@ -107,4 +107,7 @@ function! loggly#search(value)
 
 	" Prepare results
 	setlocal filetype=json
+	if exists("g:loggly_filter")
+		execute g:loggly_filter
+	endif
 endfunction

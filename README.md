@@ -57,3 +57,15 @@ You can also call the `loggly#search` function, e.g. in your own mappings:
     let g:loggly_default_size = "10"
 
 Find more using `:help loggly-search`
+
+# Extending
+
+You can call arbitrary code after the resut is returned in the buffer, e.g.:
+
+    let g:loggly_filter = "call MyLogglyFilter()"
+    
+    function! MyLogglyFilter()
+    	v/"message"/d
+      %s/^ *"message": "//>
+      %s/"$//>
+    endfunction
