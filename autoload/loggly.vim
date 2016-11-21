@@ -4,7 +4,7 @@ let g:loggly_splittype = get(g:, 'loggly_splittype', "")
 let g:loggly_bufname = get(g:, 'loggly_bufname', ".loggly-search-output.json")
 let g:loggly_default_from = get(g:, 'loggly_default_from', "-1h")
 let g:loggly_default_until = get(g:, 'loggly_default_until', "now")
-let g:loggly_default_size = get(g:, 'loggly_default_size', "10")
+let g:loggly_default_size = get(g:, 'loggly_default_size', "50")
 " }}}
 
 " Sanity check {{{
@@ -27,9 +27,9 @@ function! loggly#gotobuf()
 		normal! ggdG
 	else
 		execute g:loggly_splittype . 'new ' . g:loggly_bufname
-		setlocal buftype=nofile bufhidden=wipe nobuflisted noswapfile nowrap
+		setlocal buftype=nofile bufhidden=wipe noswapfile
 	endif
-	setlocal filetype=
+	setlocal filetype=text
 endfunction
 " }}}
 
@@ -66,13 +66,11 @@ function! loggly#search(value)
 	" Ask for search terms
 	call inputsave()
 	let l:value = input('Loggly - Search: ', a:value)
+	let g:loggly_lastsearch = l:value
 	let g:loggly_default_from = input('Loggly - From: ', g:loggly_default_from)
 	let g:loggly_default_until = input('Loggly - Until: ', g:loggly_default_until)
 	let g:loggly_default_size = input('Loggly - Limit results to: ', g:loggly_default_size)
 	call inputrestore()
-
-	" Keep search for next time
-	let g:loggly_lastsearch = l:value
 
 	" Open results buffer
 	call loggly#gotobuf()
