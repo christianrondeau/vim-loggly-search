@@ -102,7 +102,11 @@ function! loggly#search(value)
 	normal! ggdG
 	
 	" Get events
-	execute "silent! read! curl -sS " . g:loggly_curl_auth . " \"https://" . g:loggly_account . ".loggly.com/apiv2/events?rsid=" . l:searchid . "\""
+	let l:cmd = "silent! read! curl" .
+		\ " -sS -G " . g:loggly_curl_auth .
+		\ " " . shellescape("https://" . g:loggly_account . ".loggly.com/apiv2/events") .
+		\ " --data-urlencode " . shellescape("rsid=" . l:searchid)
+	execute l:cmd
 	normal! ggdd
 
 	" Prepare results
