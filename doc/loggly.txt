@@ -1,7 +1,7 @@
 *loggly.txt*  Utility to search in Loggly
 
 Author:  Christian Rondeau <http://christianrondeau.net/>
-License: Same terms as Vim itself (see |license|)
+License: MIT
 
 ==============================================================================
 
