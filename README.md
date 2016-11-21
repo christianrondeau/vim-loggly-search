@@ -70,3 +70,7 @@ You can call arbitrary code after the resut is returned in the buffer, e.g.:
       %s/^ *"message": "//>
       %s/"$//>
     endfunction
+
+# LICENSE
+
+Copyright (c) 2016 Christian Rondeau, under [MIT license](LICENSE)
