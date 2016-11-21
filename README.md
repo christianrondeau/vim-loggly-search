@@ -30,15 +30,15 @@ You also need to assign these variables in your `.vimrc`:
     let g:loggly_account = "account_name"
 
     " Either:
-    "  * --netrc-file my-password-file
+    "  * --netrc-file path-to-netrc-file
     "  * -u username
     "  * -u username:password
-    let g:loggly_curl_auth = "--netrc-file my-password-file ~/.loggly_netrc"
+    let g:loggly_curl_auth = "--netrc-file ~/.netrc"
 
 ## Windows
 
 * Install [cURL](https://curl.haxx.se/) and make sur it's in your `PATH`
-* Download https://curl.haxx.se/ca/cacert.pem as `curl-ca-bundle.crt` somewhere available in your `PATH`
+* Download https://curl.haxx.se/ca/cacert.pem as `curl-ca-bundle.crt`, and put it somewhere available in your `PATH`
 
 # Usage
 
@@ -65,7 +65,8 @@ You can call arbitrary code after the resut is returned in the buffer, e.g.:
     let g:loggly_filter = "call MyLogglyFilter()"
     
     function! MyLogglyFilter()
-    	v/"message"/d
+      " Keep only messages
+      v/"message"/d
       %s/^ *"message": "//>
       %s/"$//>
     endfunction
