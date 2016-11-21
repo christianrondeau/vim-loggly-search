@@ -34,15 +34,8 @@ endfunction
 " }}}
 
 " Loggly encode {{{
-function! loggly#cmdencode(arg)
-	let l:arg = substitute(a:arg, "\"", "\\\"", "g")
-	let l:arg = substitute(a:arg, "\\$", "\\\\$", "g")
-	return l:arg
-endfunction
-
 function! loggly#queryencode(query)
 	let l:query = substitute(a:query, "[+\–&|!(){}[\\]^\"~*?:\\\\]", " ", "g")
-	let l:query = "\"" . l:query . "\""
 	return l:query
 endfunction
 " }}}
@@ -53,7 +46,12 @@ function! loggly#getsearchid()
 	let l:line      = search(l:pattern)
 	let l:line_text = getline(l:line)
 	let l:matched   = matchlist(l:line_text, l:pattern)
-	return l:matched[1]
+	echom join(l:matched)
+	if len(l:matched) >= 2
+		return l:matched[1]
+	else
+		return ""
+	endif
 endfunction
 " }}}
 
@@ -80,21 +78,28 @@ function! loggly#search(value)
 	call loggly#gotobuf()
 
 	" Wait message
-	call setline(1, "Searching for \"" . l:value . "\"...")
+	call setline(1, "Searching for: " . l:value)
 	redraw!
 
 	" Search
-	execute "silent! read! curl -sS -G " . g:loggly_curl_auth . " \"https://" . g:loggly_account . ".loggly.com/apiv2/search\" --data-urlencode \"q=" . loggly#cmdencode(l:value) . "\" --data-urlencode \"from=" . loggly#cmdencode(g:loggly_default_from) . "\" --data-urlencode \"until=" . loggly#cmdencode(g:loggly_default_until) . "\" --data-urlencode \"size=" . loggly#cmdencode(g:loggly_default_size) . "\""
+	let l:cmd = "silent! read! curl" .
+		\ " -sS -G " . g:loggly_curl_auth .
+		\ " " . shellescape("https://" . g:loggly_account . ".loggly.com/apiv2/search") .
+		\ " --data-urlencode " . shellescape("q=" . l:value) .
+		\ " --data-urlencode " . shellescape("from=" . g:loggly_default_from) .
+		\ " --data-urlencode " . shellescape("until=" . g:loggly_default_until) .
+		\ " --data-urlencode " . shellescape("size=" . g:loggly_default_size)
+	execute l:cmd
 
 	" Get search id
 	let l:searchid = loggly#getsearchid()
 	if strlen(l:searchid) < 6
-		throw "Could not get a search id"
+		throw "Could not get the rsid"
 	endif
 
 	" Waiting for events
 	normal! 2GdG
-	call setline(2, "Waiting for rsid \"" . l:searchid . "\"...")
+	call setline(2, "Waiting for events \"" . l:searchid . "\"...")
 	redraw!
 	normal! ggdG
 	

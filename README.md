@@ -46,6 +46,10 @@ Type `<leader>loggly` in visual mode to start a search and show results in a new
 
 When *not* in visual mode, it will remember your last search.
 
+You can also call the `loggly#search` function, e.g. in your own mappings:
+
+    nnoremap <leader>errors :call loggly#search("json.level:ERROR")<cr>
+
 # Settings
 
     let g:loggly_default_from = "-1h"
