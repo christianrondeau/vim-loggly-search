@@ -66,6 +66,14 @@ function! loggly#validateinput(value) abort
 	return a:value
 endfunction
 
+function! loggly#paramescape(key, value)
+	if stridx(&shell, 'cmd') != -1
+		return '"' . a:key . '=' . substitute(a:value, '"', '"""', 'g') . '"'
+	else
+		return shellescape(a:key . "=" . a:value)
+	endif
+endfunction
+
 function! loggly#search(value) abort
 	" Ensure settings were configured
 	call loggly#sanitycheck()
@@ -89,12 +97,11 @@ function! loggly#search(value) abort
 	" Search
 	let l:cmd = "silent! read! curl" .
 		\ " -sS -G " . g:loggly_curl_auth .
-		\ " " . shellescape("https://" . g:loggly_account . ".loggly.com/apiv2/search") .
-		\ " --data-urlencode " . shellescape("q=" . l:value) .
-		\ " --data-urlencode " . shellescape("from=" . g:loggly_default_from) .
-		\ " --data-urlencode " . shellescape("until=" . g:loggly_default_until) .
-		\ " --data-urlencode " . shellescape("size=" . g:loggly_default_size)
-	echom l:cmd
+		\ " " . shellescape("https://" . g:loggly_account . ".loggly.com/apiv2/search", 1) .
+		\ " --data-urlencode " . loggly#paramescape("q", l:value) .
+		\ " --data-urlencode " . loggly#paramescape("from", g:loggly_default_from) .
+		\ " --data-urlencode " . loggly#paramescape("until", g:loggly_default_until) .
+		\ " --data-urlencode " . loggly#paramescape("size", g:loggly_default_size)
 	execute l:cmd
 
 	" Get search id
@@ -112,8 +119,8 @@ function! loggly#search(value) abort
 	" Get events
 	let l:cmd = "silent! read! curl" .
 		\ " -sS -G " . g:loggly_curl_auth .
-		\ " " . shellescape("https://" . g:loggly_account . ".loggly.com/apiv2/events") .
-		\ " --data-urlencode " . shellescape("rsid=" . l:searchid)
+		\ " " . shellescape("https://" . g:loggly_account . ".loggly.com/apiv2/events", 1) .
+		\ " --data-urlencode " . loggly#paramescape("rsid", l:searchid)
 	execute l:cmd
 	normal! ggdd
 
