@@ -59,7 +59,14 @@ function! loggly#searchtext(value)
 	return loggly#search("\"" . loggly#queryencode(a:value) . "\"")
 endfunction
 
-function! loggly#search(value)
+function! loggly#validateinput(value) abort
+	if(strlen(a:value) <= 0)
+		throw "A value is required, cancelling loggly search"
+	endif
+	return a:value
+endfunction
+
+function! loggly#search(value) abort
 	" Ensure settings were configured
 	call loggly#sanitycheck()
 
@@ -67,9 +74,9 @@ function! loggly#search(value)
 	call inputsave()
 	let l:value = input('Loggly - Search: ', a:value)
 	let g:loggly_lastsearch = l:value
-	let g:loggly_default_from = input('Loggly - From: ', g:loggly_default_from)
-	let g:loggly_default_until = input('Loggly - Until: ', g:loggly_default_until)
-	let g:loggly_default_size = input('Loggly - Limit results to: ', g:loggly_default_size)
+	let g:loggly_default_from = loggly#validateinput(input('Loggly - From: ', g:loggly_default_from))
+	let g:loggly_default_until = loggly#validateinput(input('Loggly - Until: ', g:loggly_default_until))
+	let g:loggly_default_size = loggly#validateinput(input('Loggly - Limit results to: ', g:loggly_default_size))
 	call inputrestore()
 
 	" Open results buffer
@@ -87,6 +94,7 @@ function! loggly#search(value)
 		\ " --data-urlencode " . shellescape("from=" . g:loggly_default_from) .
 		\ " --data-urlencode " . shellescape("until=" . g:loggly_default_until) .
 		\ " --data-urlencode " . shellescape("size=" . g:loggly_default_size)
+	echom l:cmd
 	execute l:cmd
 
 	" Get search id
