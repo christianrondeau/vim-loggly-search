@@ -42,13 +42,13 @@ You also need to assign these variables in your `.vimrc`:
 
 # Usage
 
-Type `<leader>loggly` in visual mode to start a search and show results in a new split buffer.
+Type `<leader>loggly` to start a search and show results in a new split buffer. It also will automatically prepopulate the search when using the shortcut in visual mode. It remembers the last search.
 
-When *not* in visual mode, it will remember your last search.
+You can use the command `:LogglySearch "my search query"` if you prefer.
 
-You can also call the `loggly#search` function, e.g. in your own mappings:
+You can use this in your own mappings:
 
-    nnoremap <leader>errors :call loggly#search("json.level:ERROR")<cr>
+    nnoremap <leader>errors :LogglySearch "json.level:ERROR"<cr>
 
 # Settings
 
