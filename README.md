@@ -11,16 +11,15 @@ Searches for the visually selected text in [Loggly](https://www.loggly.com).
 
 ## Plugin
 
-Use your preferred Vim plugin installation method. If you like [Vundle](https://github.com/VundleVim/Vundle.vim):
+Use your preferred Vim plugin installation method. If you like [vim-plug](https://github.com/junegunn/vim-plug):
 
 Add to your `.vimrc`:
 
-    Plugin 'christianrondeau/vim-loggly-search'
+    Plug 'christianrondeau/vim-loggly-search'
 
 And install it:
 
-    :so ~/.vimrc
-    :PluginInstall
+    :PlugInstall
 
 ## Basic Configuration
 
