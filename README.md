@@ -46,7 +46,13 @@ Type `<leader>loggly` to start a search and show results in a new split buffer. 
 
 You can use the command `:LogglySearch "my search query"` if you prefer.
 
-You can use this in your own mappings:
+# Mapping
+
+You can create your own mapping if you want:
+
+    map <leader>log <Plug>LogglySearch
+
+You can also create maps for searches you do often:
 
     nnoremap <leader>errors :LogglySearch "json.level:ERROR"<cr>
 
