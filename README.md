@@ -29,10 +29,10 @@ You also need to assign these variables in your `.vimrc`:
     let g:loggly_account = "account_name"
 
     " Either:
-    "  * --netrc-file path-to-netrc-file
-    "  * -u username
+    "  * --netrc-file path-to-netrc-file (see https://ec.haxx.se/usingcurl-netrc.html)
     "  * -u username:password
-    let g:loggly_curl_auth = "--netrc-file ~/.netrc"
+    "  * -H "Authorization: bearer YOUR-LOGGLY-TOKEN" (see https://mediaclip.loggly.com/account/users/api/tokens)
+    let g:loggly_curl_auth = '-H "Authorization: bearer 00000000-0000-0000-0000-000000000000"'
 
 ## Windows
 
@@ -59,7 +59,7 @@ You can also create maps for searches you do often:
 
     let g:loggly_default_from = "-1h"
     let g:loggly_default_until = "now"
-    let g:loggly_default_size = "10"
+    let g:loggly_default_size = "100"
 
 Find more using `:help loggly-search`
 
