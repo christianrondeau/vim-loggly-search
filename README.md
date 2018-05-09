@@ -72,8 +72,8 @@ You can call arbitrary code after the resut is returned in the buffer, e.g.:
     function! MyLogglyFilter()
       " Keep only messages
       v/"message"/d
-      %s/^ *"message": "//>
-      %s/"$//>
+      %s/\v^ *"message": "//
+      %s/\v"$,?//
     endfunction
 
 # LICENSE
